@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.EventSystems.StandaloneInputModule;
 public class ControllerPlayer : MonoBehaviour
 {
     public InputActionAsset inputAction;
@@ -12,7 +13,7 @@ public class ControllerPlayer : MonoBehaviour
     [SerializeField] private Vector2 move;
     [SerializeField] private Vector2 look;
 
-    Rigidbody rb;
+    Rigidbody2D rb;
 
     [SerializeField] float speedMove;
     [SerializeField] float lookSpeed;
@@ -33,36 +34,39 @@ public class ControllerPlayer : MonoBehaviour
         LookAction = InputSystem.actions.FindAction("Look");
         jumpAction = InputSystem.actions.FindAction("Jump");
         grabAction = InputSystem.actions.FindAction("Grab");
-        rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody2D>();
     }
     private void Update()
     {
         move = moveAction.ReadValue<Vector2>();
         look = LookAction.ReadValue<Vector2>();
 
-        if (jumpAction.WasPressedThisFrame())
-        {
-            Jump();
-        }
+        //if (jumpAction.WasPressedThisFrame())
+        //{
+        //    //Jump();
+        //}
 
-        if (grabAction.WasPressedThisFrame())
-        {
-            Debug.Log("agarraste algo perro");
-        }
+        //if (grabAction.WasPressedThisFrame())
+        //{
+        //    Debug.Log("agarraste algo perro");
+        //}
     }
     private void FixedUpdate()
     {
         Move();
     }
 
-    private void Jump()
-    {
-        rb.AddForceAtPosition(new Vector3(0, jumpForce, 0), Vector3.up, ForceMode.Impulse);
-    }
+    //private void Jump()
+    //{
+    //    rb.AddForceAtPosition(new Vector3(0, jumpForce, 0), Vector3.up, ForceMode.Impulse);
+    //}
 
     private void Move()
     {
-        rb.MovePosition(rb.position + transform.forward * move.y * speedMove * Time.deltaTime);
-        rb.MovePosition(rb.position + transform.right * move.x * speedMove * Time.deltaTime);
+        rb.linearVelocity = new Vector2(move.x * speedMove, move.y * speedMove);
+
+        Vector3 direction = new Vector3(move.x, move.y, 0);
+
+        transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
     }
 }
