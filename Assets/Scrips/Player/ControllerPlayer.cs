@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.Windows;
 using static UnityEngine.EventSystems.StandaloneInputModule;
 public class ControllerPlayer : MonoBehaviour
 {
@@ -18,7 +20,7 @@ public class ControllerPlayer : MonoBehaviour
     [SerializeField] float speedMove;
     [SerializeField] float lookSpeed;
     [SerializeField] float jumpForce;
-
+    Weapon weapon;
     private void OnEnable()
     {
         inputAction.FindActionMap("Player").Enable();
@@ -35,21 +37,18 @@ public class ControllerPlayer : MonoBehaviour
         jumpAction = InputSystem.actions.FindAction("Jump");
         grabAction = InputSystem.actions.FindAction("Grab");
         rb = GetComponent<Rigidbody2D>();
+        weapon = GetComponentInChildren<Weapon>();
     }
     private void Update()
     {
+
         move = moveAction.ReadValue<Vector2>();
         look = LookAction.ReadValue<Vector2>();
 
-        //if (jumpAction.WasPressedThisFrame())
-        //{
-        //    //Jump();
-        //}
-
-        //if (grabAction.WasPressedThisFrame())
-        //{
-        //    Debug.Log("agarraste algo perro");
-        //}
+        if (jumpAction.WasPressedThisFrame())
+        {
+            weapon.Shoot();
+        }
     }
     private void FixedUpdate()
     {
@@ -68,5 +67,12 @@ public class ControllerPlayer : MonoBehaviour
         Vector3 direction = new Vector3(move.x, move.y, 0);
 
         transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+    }
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 }
