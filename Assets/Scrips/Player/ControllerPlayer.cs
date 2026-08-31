@@ -1,11 +1,10 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UnityEngine.Windows;
-using static UnityEngine.EventSystems.StandaloneInputModule;
 public class ControllerPlayer : MonoBehaviour
 {
     public InputActionAsset inputAction;
+
 
     private InputAction moveAction;
     private InputAction LookAction;
@@ -17,6 +16,8 @@ public class ControllerPlayer : MonoBehaviour
 
     Rigidbody2D rb;
 
+    [SerializeField] private GameObject[] weaponsPlayer;
+    private int index = 0;
     [SerializeField] float speedMove;
     [SerializeField] float lookSpeed;
     [SerializeField] float jumpForce;
@@ -24,10 +25,12 @@ public class ControllerPlayer : MonoBehaviour
     private void OnEnable()
     {
         inputAction.FindActionMap("Player").Enable();
+        GameManager.AddWeapon += ActiveWeapon;
     }
     private void OnDisable()
     {
         inputAction.FindActionMap("Player").Disable();
+        GameManager.AddWeapon -= ActiveWeapon;
     }
 
     private void Awake()
@@ -45,10 +48,10 @@ public class ControllerPlayer : MonoBehaviour
         move = moveAction.ReadValue<Vector2>();
         look = LookAction.ReadValue<Vector2>();
 
-        if (jumpAction.WasPressedThisFrame())
-        {
-            weapon.Shoot();
-        }
+        //if (jumpAction.WasPressedThisFrame())
+        //{
+        //    weapon.Shoot();
+        //}
     }
     private void FixedUpdate()
     {
@@ -75,4 +78,18 @@ public class ControllerPlayer : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }
+    void ActiveWeapon()
+    {
+        if (index != weaponsPlayer.Length)
+        {
+            weaponsPlayer[index].SetActive(true);
+            index++;
+        }
+        else
+        {
+            speedMove += 1.5f;
+        }
+
+    }
+
 }

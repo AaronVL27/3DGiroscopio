@@ -49,6 +49,7 @@ public class EnemyController : MonoBehaviour
             if (currHealth<=0)
             {
                 Die();
+                GameManager.Instance.AddpointCarGame();
             }
         }
     }

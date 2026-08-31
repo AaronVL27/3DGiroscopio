@@ -7,7 +7,7 @@ public class PoolManager : MonoBehaviour
     [SerializeField] private GameObject prefab;
     [SerializeField] private int cantidadInicial = 10;
     private Queue<GameObject> pool = new Queue<GameObject>();
-
+    [SerializeField] private Transform containerSpawn;
 
     void Awake()
     {
@@ -19,7 +19,7 @@ public class PoolManager : MonoBehaviour
     {
         for (int i = 0; i < cantidadInicial; i++)
         {
-            GameObject obj = Instantiate(prefab);
+            GameObject obj = Instantiate(prefab, containerSpawn);
             obj.SetActive(false);
             pool.Enqueue(obj);
         }
@@ -27,7 +27,7 @@ public class PoolManager : MonoBehaviour
 
     public GameObject ObtenerObjeto()
     {
-        GameObject obj = pool.Count > 0 ? pool.Dequeue() : Instantiate(prefab);
+        GameObject obj = pool.Count > 0 ? pool.Dequeue() : Instantiate(prefab, containerSpawn);
         return obj;
     }
 

@@ -1,14 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
-public class ObjectPool : MonoBehaviour
+public class ObjectPool2 : MonoBehaviour
 {
     [SerializeField] private GameObject prefab;
     [SerializeField] private GameObject[] spawnPoints;
     [SerializeField] private Transform containerSpawn;
     [SerializeField] private int poolSize;
-    [SerializeField] private float cooldownTime;
+    //[SerializeField] private float cooldownTime;
 
     private Queue<GameObject> poolObject = new Queue<GameObject>();
     private List<GameObject> activeEnemies = new List<GameObject>();
@@ -22,7 +22,7 @@ public class ObjectPool : MonoBehaviour
             enemy.SetActive(false);
 
             // Le pasamos la referencia al pool apenas nace
-            EnemyController enemyScript = enemy.GetComponent<EnemyController>();
+            CarEnemy enemyScript = enemy.GetComponent<CarEnemy>();
             enemyScript.objectPool = this;
 
             poolObject.Enqueue(enemy);
@@ -32,6 +32,25 @@ public class ObjectPool : MonoBehaviour
     void Start()
     {
         Spawn();
+    }
+
+
+    private void OnEnable()
+    {
+        // Si hay enemigos activos en la escena, los movemos a un nuevo punto aleatorio
+        foreach (GameObject enemy in activeEnemies)
+        {
+            if (enemy != null && enemy.activeSelf)
+            {
+                // Elegimos un punto nuevo al azar
+                int indiceRandom = Random.Range(0, spawnPoints.Length);
+                Transform spawnPoint = spawnPoints[indiceRandom].transform;
+
+                // Teletransportamos al enemigo a su nueva posición
+                enemy.transform.position = spawnPoint.position;
+                enemy.transform.rotation = spawnPoint.rotation;
+            }
+        }
     }
 
     void Spawn()
@@ -54,10 +73,10 @@ public class ObjectPool : MonoBehaviour
 
         // Si todavía queda espacio disponible en el pool, seguimos spawneando
         // (quita este bloque si quieres spawnear de a uno por vez)
-        if (poolObject.Count > 0)
-        {
-            Spawn();
-        }
+        //if (poolObject.Count > 0)
+        //{
+        //    Spawn();
+        //}
     }
 
     // Esto lo va a llamar el Enemy cuando muera
@@ -66,14 +85,13 @@ public class ObjectPool : MonoBehaviour
         activeEnemies.Remove(enemy);
         enemy.SetActive(false);
         poolObject.Enqueue(enemy);
-
-        StartCoroutine(CooldownAndSpawn());
-    }
-
-    private IEnumerator CooldownAndSpawn()
-    {
-        yield return new WaitForSeconds(cooldownTime);
         Spawn();
+        //StartCoroutine(CooldownAndSpawn());
     }
 
+    //private IEnumerator CooldownAndSpawn()
+    //{
+    //    yield return new WaitForSeconds(cooldownTime);
+    //    Spawn();
+    //}
 }
