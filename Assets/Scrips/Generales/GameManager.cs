@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
     IEnumerator ChageBasegame()
     {
         StarBaseGame();
-        yield return new WaitForSecondsRealtime(2);
+        yield return new WaitForSecondsRealtime(5);
         Time.timeScale = 1;
 
     }
