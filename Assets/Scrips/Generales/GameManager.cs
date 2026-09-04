@@ -77,16 +77,21 @@ public class GameManager : MonoBehaviour
     IEnumerator ChageBasegame()
     {
         StarBaseGame();
-        yield return new WaitForSecondsRealtime(5);
+        yield return new WaitForSecondsRealtime(3);
         Time.timeScale = 1;
 
     }
     public void StarBaseGame()
     {
-        indexChageGameShot = 0;
         playerCam.Priority = 10;
         playerCarCam.Priority = 5;
+        indexChageGameShot = 0;
         baseGame.SetActive(true);
         miniGame.SetActive(false);
+    }
+    public void LoseMiniGame()
+    {
+        Time.timeScale = 0;
+        StartCoroutine(ChageBasegame());
     }
 }

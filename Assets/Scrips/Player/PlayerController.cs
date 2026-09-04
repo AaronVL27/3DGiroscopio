@@ -4,35 +4,29 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float speed;
+    [SerializeField] private float tiltRange = 0.2f; // sensibilidad de la inclinación
 
-    PlayerInput input;
     Rigidbody2D rb2D;
 
     private void Start()
     {
         rb2D = GetComponent<Rigidbody2D>();
-        input = GetComponent<PlayerInput>();
 
-        if (AttitudeSensor.current != null)
-            InputSystem.EnableDevice(AttitudeSensor.current);
+        if (Accelerometer.current != null)
+            InputSystem.EnableDevice(Accelerometer.current);
     }
 
     private void FixedUpdate()
     {
         float steerInput = 0f;
 
-        if (AttitudeSensor.current != null && AttitudeSensor.current.enabled)
+        if (Accelerometer.current != null && Accelerometer.current.enabled)
         {
-            float z = AttitudeSensor.current.attitude.ReadValue().eulerAngles.z;
-
-            // z viene en 0-360. Hay que convertirlo a un rango -180 a 180
-            // para que "recto" sea 0, izquierda sea negativo, derecha positivo
-            if (z > 180f) z -= 360f;
-
-            steerInput = Mathf.Clamp(z / 45f, -1f, 1f); // 45° = inclinación máxima que consideras "a fondo"
+            float x = Accelerometer.current.acceleration.ReadValue().x;
+            steerInput = Mathf.Clamp(x / tiltRange, -1f, 1f);
         }
 
-        rb2D.linearVelocity = new Vector2(steerInput * speed, 0f); // el auto avanza solo, y se mueve lateral según inclinación
+        rb2D.linearVelocity = new Vector2(steerInput * speed, 0f);
     }
 
 }

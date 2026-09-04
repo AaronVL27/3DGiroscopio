@@ -953,26 +953,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mini Juego
       objectReference: {fileID: 0}
-    - target: {fileID: 1818821620454624081, guid: 5579cdd1f564b2d4a94e841123ff6809, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3860989649287251232, guid: 5579cdd1f564b2d4a94e841123ff6809, type: 3}
-      propertyPath: m_Color.b
-      value: 0.9481132
-      objectReference: {fileID: 0}
-    - target: {fileID: 3860989649287251232, guid: 5579cdd1f564b2d4a94e841123ff6809, type: 3}
-      propertyPath: m_Color.g
-      value: 0.9481132
-      objectReference: {fileID: 0}
-    - target: {fileID: 3860989649287251232, guid: 5579cdd1f564b2d4a94e841123ff6809, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3860989649287251232, guid: 5579cdd1f564b2d4a94e841123ff6809, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: dc76aaeccb38e1545afbebbc46734485, type: 2}
     - target: {fileID: 7386329323741554667, guid: 5579cdd1f564b2d4a94e841123ff6809, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.29329
@@ -1066,21 +1046,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8297291718369178846, guid: 882052e8e811ed5488f2284aed026b9d, type: 3}
-      propertyPath: m_SortingOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8297291718369178846, guid: 882052e8e811ed5488f2284aed026b9d, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 8615424887576925079, guid: 882052e8e811ed5488f2284aed026b9d, type: 3}
       propertyPath: m_Name
       value: GameBase
-      objectReference: {fileID: 0}
-    - target: {fileID: 8615424887576925079, guid: 882052e8e811ed5488f2284aed026b9d, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

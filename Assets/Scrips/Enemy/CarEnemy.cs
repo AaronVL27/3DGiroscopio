@@ -24,7 +24,7 @@ public class CarEnemy : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
-            GameManager.Instance.StarBaseGame();
+            GameManager.Instance.LoseMiniGame();
         else
             Die();
     }
