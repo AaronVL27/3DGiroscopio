@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviour
     {
         baseGame.SetActive(false);
         miniGame.SetActive(true);
+        IUManager.Instance.ChageMiniGame();
     }
     public void StarBaseGame()
     {
@@ -92,6 +93,7 @@ public class GameManager : MonoBehaviour
         indexChageGameShot = 0;
         baseGame.SetActive(true);
         miniGame.SetActive(false);
+        IUManager.Instance.ChageBaseGame();
     }
     IEnumerator ChageMiniGame()
     {

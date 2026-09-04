@@ -78,6 +78,14 @@ public class IUManager : MonoBehaviour
         GameManager.Instance.ExitGame();
     }
 
+    public void ChageMiniGame()
+    {
+        hudPanel.SetActive(false);
+    }
+    public void ChageBaseGame()
+    {
+        hudPanel.SetActive(true);
+    }
 
     public void StartMenu()
     {
