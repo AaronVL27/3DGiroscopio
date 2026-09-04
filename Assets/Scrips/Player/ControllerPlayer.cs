@@ -75,7 +75,7 @@ public class ControllerPlayer : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            GameManager.Instance.LoseGame();
         }
     }
     void ActiveWeapon()
