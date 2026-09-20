@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
         }
 
         rb2D.linearVelocity = new Vector2(steerInput * speed, 0f);
+        
     }
 
 }

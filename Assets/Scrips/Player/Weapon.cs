@@ -5,7 +5,6 @@ public class Weapon : MonoBehaviour
     [SerializeField] private Transform bulletPoint;
     [SerializeField] private float coolDown;
     private float timer;
-
     //[SerializeField] private ParticleSystem shotParticle;
     Rigidbody rb;
     private void Start()
@@ -29,6 +28,7 @@ public class Weapon : MonoBehaviour
         bullet.transform.position = bulletPoint.position;
         bullet.transform.rotation = bulletPoint.rotation;
         //shotParticle.Play();
+        AudioManager.Instance.PlaySFX("GunShot");
         bullet.SetActive(true);
     }
 

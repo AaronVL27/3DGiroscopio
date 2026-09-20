@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -15,6 +16,7 @@ public class GameManager : MonoBehaviour
     public static event Action GameOverEvent;
     public static event Action MainMenuEvent;
     public static event Action PlayGameEvent;
+    public static event Action OptionsEvent;
 
     [SerializeField] private CinemachineCamera playerCam;
     [SerializeField] private CinemachineCamera playerCarCam;
@@ -24,6 +26,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float chageGameShot;
     private float indexChageGameShot = 0;
     public float ChageGameShot { get { return indexChageGameShot; } }
+    public float ChageGameShotObjetive { get { return chageGameShot; } }
     //public float ChageGameShot => indexChageGameShot; otra manera
 
     [SerializeField] private GameObject baseGame;
@@ -47,11 +50,13 @@ public class GameManager : MonoBehaviour
         {
             startInGame = false;
             StartGame();
+            AudioManager.Instance.ResumeMusic(0);
         }
         else
         {
             Time.timeScale = 0;
             MainMenuEvent?.Invoke();
+            AudioManager.Instance.PlayMusic(0, "SongMenu");
         }
     }
     public void AddpointCarGame()
@@ -85,6 +90,8 @@ public class GameManager : MonoBehaviour
         baseGame.SetActive(false);
         miniGame.SetActive(true);
         IUManager.Instance.ChageMiniGame();
+        AudioManager.Instance.PlayMusic(2,"Car_Player");
+        AudioManager.Instance.PauseMusic(1);
     }
     public void StarBaseGame()
     {
@@ -94,6 +101,10 @@ public class GameManager : MonoBehaviour
         baseGame.SetActive(true);
         miniGame.SetActive(false);
         IUManager.Instance.ChageBaseGame();
+        AudioManager.Instance.ResumeMusic(1);
+        AudioManager.Instance.StopMusic(2);
+        if (Touchscreen.current != null)
+            InputSystem.ResetDevice(Touchscreen.current);
     }
     IEnumerator ChageMiniGame()
     {
@@ -123,20 +134,21 @@ public class GameManager : MonoBehaviour
     public void PauseGame()
     {
         Time.timeScale = 0;
-
         PauseEvent?.Invoke();
+        AudioManager.Instance.PauseMusic(1);
     }
     public void ResumeGame()
     {
         Time.timeScale = 1;
-
         ResumeEvent?.Invoke();
+        AudioManager.Instance.ResumeMusic(1);
     }
     public void LoseGame()
     {
         Time.timeScale = 0;
-
         GameOverEvent?.Invoke();
+        AudioManager.Instance.PlayMusic(2, "SongGameOver");
+        AudioManager.Instance.StopMusic(1);
     }
 
     public void RestartGame()
@@ -154,11 +166,18 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         Time.timeScale = 1;
-
         PlayGameEvent?.Invoke();
+        AudioManager.Instance.PlayMusic(1, "MusicaFondoJuego");
+        AudioManager.Instance.StopMusic(0);
+    }
+    public void OptionsGame()
+    {
+        //Time.timeScale = 0;
+        AudioManager.Instance.ResumeMusic(0);
+        OptionsEvent?.Invoke();
     }
     public void ExitGame()
     {
         Application.Quit();
-    }
+    } 
 }

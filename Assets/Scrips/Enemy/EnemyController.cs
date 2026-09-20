@@ -4,11 +4,13 @@ public class EnemyController : MonoBehaviour
 {
     public ObjectPool objectPool;
 
-    [SerializeField] private float MaxHealth;
-    [SerializeField] private float speed;
-    private float currHealth;
+    public float MaxHealth;
+    private float speed = 0;
+    public float currHealth;
+    private bool luckOfLife = false;
     Rigidbody2D rb2D;
     private Transform player;
+    private PlayerHealth playerHealth;
     private void Start()
     {
         rb2D = GetComponent<Rigidbody2D>();
@@ -17,6 +19,7 @@ public class EnemyController : MonoBehaviour
     void OnEnable()
     {
         GameObject jugador = GameObject.FindWithTag("Player");
+        playerHealth = jugador.GetComponent<PlayerHealth>();
 
         if (jugador != null)
         {
@@ -26,6 +29,37 @@ public class EnemyController : MonoBehaviour
         {
             player = null;
         }
+
+        float probabilidad = Random.value;
+
+        switch (probabilidad)
+        {
+            case < 0.60f:
+                transform.localScale = new Vector2(1f, 1f);
+                MaxHealth = 3;
+                speed = 8f;
+                break;
+
+            case < 0.85f:
+                transform.localScale = new Vector2(0.5f, 0.5f);
+                MaxHealth = 1;
+                speed = 10f;
+                break;
+
+            case < 0.95f:
+                transform.localScale = new Vector2(2f, 2f);
+                MaxHealth = 6;
+                speed = 6f;
+                break;
+
+            default:
+                transform.localScale = new Vector2(3f, 3f);
+                MaxHealth = 9;
+                speed = 3f;
+                luckOfLife=true;
+                break;
+        }
+        currHealth = MaxHealth;
     }
     void FixedUpdate()
     {
@@ -46,7 +80,14 @@ public class EnemyController : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("Bullet"))
         {
             currHealth--;
-            if (currHealth<=0)
+            if (currHealth <= 0 && luckOfLife)
+            {
+                playerHealth.AddHealth();
+                Die();
+                GameManager.Instance.AddpointCarGame();
+                luckOfLife = false;
+            }
+            else if(currHealth <= 0 && !luckOfLife)
             {
                 Die();
                 GameManager.Instance.AddpointCarGame();
@@ -55,6 +96,7 @@ public class EnemyController : MonoBehaviour
     }
     void Die()
     {
+        AudioManager.Instance.PlaySFX("Hurt_EnemyP");
         currHealth = MaxHealth;
         objectPool.ReturnToPool(gameObject);
     }

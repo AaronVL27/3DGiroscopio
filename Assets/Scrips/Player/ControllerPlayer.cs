@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+
+public enum ModoControl { DosJoysticks, UnJoystick }
+
 public class ControllerPlayer : MonoBehaviour
 {
     public InputActionAsset inputAction;
-
 
     private InputAction moveAction;
     private InputAction LookAction;
@@ -21,16 +23,22 @@ public class ControllerPlayer : MonoBehaviour
     [SerializeField] float speedMove;
     [SerializeField] float lookSpeed;
     [SerializeField] float jumpForce;
+    [SerializeField] float deadzoneMovimiento = 0.2f;
+    [SerializeField] float umbralApuntado = 0.6f;
     Weapon weapon;
+
+    private ModoControl currModeController;
     private void OnEnable()
     {
         inputAction.FindActionMap("Player").Enable();
         GameManager.AddWeapon += ActiveWeapon;
+        SettingsManager.OnModoControlChanged += CambiarModoControl;
     }
     private void OnDisable()
     {
         inputAction.FindActionMap("Player").Disable();
         GameManager.AddWeapon -= ActiveWeapon;
+        SettingsManager.OnModoControlChanged -= CambiarModoControl;
     }
 
     private void Awake()
@@ -52,6 +60,9 @@ public class ControllerPlayer : MonoBehaviour
         //{
         //    weapon.Shoot();
         //}
+        if (currModeController == ModoControl.DosJoysticks)
+            UpdateAim();
+
     }
     private void FixedUpdate()
     {
@@ -62,22 +73,72 @@ public class ControllerPlayer : MonoBehaviour
     //{
     //    rb.AddForceAtPosition(new Vector3(0, jumpForce, 0), Vector3.up, ForceMode.Impulse);
     //}
-
+    private void CambiarModoControl(ModoControl nuevoModo)
+    {
+        Debug.Log("Player recibió cambio -> " + nuevoModo);
+        currModeController = nuevoModo;
+    }
     private void Move()
     {
-        rb.linearVelocity = new Vector2(move.x * speedMove, move.y * speedMove);
-
-        Vector3 direction = new Vector3(move.x, move.y, 0);
-
-        transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
-    }
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        if (currModeController == ModoControl.DosJoysticks)
         {
-            GameManager.Instance.LoseGame();
+            rb.linearVelocity = new Vector2(move.x * speedMove, move.y * speedMove);
+            // aquí NO tocas rotación, eso lo hace UpdateAim() con el stick derecho
+        }
+        else // UnJoystick
+        {
+            float magnitud = move.magnitude;
+            if (magnitud < deadzoneMovimiento)
+                rb.linearVelocity = Vector2.zero;
+            if (magnitud >= deadzoneMovimiento)
+                rb.linearVelocity = new Vector2(move.x * speedMove, move.y * speedMove);
+            if (magnitud >= umbralApuntado)
+            {
+                Vector3 direction = new Vector3(move.x, move.y, 0);
+                transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+            }
         }
     }
+    private void UpdateAim()
+    {
+        if (look.sqrMagnitude > 0.01f) // solo rota si el stick derecho tiene input
+            transform.rotation = Quaternion.LookRotation(Vector3.forward, look);
+    }
+    //private void Move()
+    //{
+    //    float magnitud = move.magnitude;
+
+    //    if (magnitud < deadzoneMovimiento)
+    //    {
+    //        rb.linearVelocity = Vector2.zero;
+    //    }
+    //    if (magnitud >= deadzoneMovimiento)
+    //    {
+    //        rb.linearVelocity = new Vector2(move.x * speedMove, move.y * speedMove);
+    //    }
+    //}
+
+    //private void Move() //con un solo joistick 
+    //{
+    //    float magnitud = move.magnitude;
+
+    //    if (magnitud < deadzoneMovimiento)
+    //    {
+    //        rb.linearVelocity = Vector2.zero;
+    //    }
+
+    //    if (magnitud >= deadzoneMovimiento)
+    //    {
+    //        rb.linearVelocity = new Vector2(move.x * speedMove, move.y * speedMove);
+    //    }
+
+    //    if (magnitud >= umbralApuntado)
+    //    {
+    //        Vector3 direction = new Vector3(move.x, move.y, 0);
+
+    //        transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+    //    }
+    //}
     void ActiveWeapon()
     {
         if (index != weaponsPlayer.Length)
@@ -89,7 +150,9 @@ public class ControllerPlayer : MonoBehaviour
         {
             speedMove += 1.5f;
         }
-
     }
-
+    void SoundSFX()
+    {
+        AudioManager.Instance.PlaySFX("Walk_Player");
+    }
 }
