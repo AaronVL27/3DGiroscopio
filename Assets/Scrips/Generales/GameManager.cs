@@ -29,6 +29,8 @@ public class GameManager : MonoBehaviour
     public float ChageGameShotObjetive { get { return chageGameShot; } }
     //public float ChageGameShot => indexChageGameShot; otra manera
 
+    public int Score = 0;
+
     [SerializeField] private GameObject baseGame;
     [SerializeField] private GameObject miniGame;
     private static bool startInGame = false;
@@ -73,7 +75,7 @@ public class GameManager : MonoBehaviour
     public void AddpointShotGame()
     {
         indexChageGameShot++;
-        IUManager.Instance.AddScore();
+        IUManager.Instance.AddScoreCar();
         if (indexChageGameShot >= chageGameShot)
         {
             Time.timeScale = 0;
@@ -83,6 +85,17 @@ public class GameManager : MonoBehaviour
             indexChageGameShot = 0;
         }
     }
+    public void AddScore()
+    {
+        Score++;
+        IUManager.Instance.Score();
+    }
+
+    public void ResetScore()
+    {
+        Score = 0;
+        IUManager.Instance.Score();
+    }
 
     /// //////////////////////////////////////
     public void StarMiniGame()
@@ -90,8 +103,8 @@ public class GameManager : MonoBehaviour
         baseGame.SetActive(false);
         miniGame.SetActive(true);
         IUManager.Instance.ChageMiniGame();
-        AudioManager.Instance.PlayMusic(2,"Car_Player");
-        AudioManager.Instance.PauseMusic(1);
+        AudioManager.Instance.PlayMusic(2, "Car_Player");
+        //AudioManager.Instance.PauseMusic(1);
     }
     public void StarBaseGame()
     {
@@ -145,6 +158,7 @@ public class GameManager : MonoBehaviour
     }
     public void LoseGame()
     {
+        ResetScore();
         Time.timeScale = 0;
         GameOverEvent?.Invoke();
         AudioManager.Instance.PlayMusic(2, "SongGameOver");
@@ -179,5 +193,5 @@ public class GameManager : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
-    } 
+    }
 }

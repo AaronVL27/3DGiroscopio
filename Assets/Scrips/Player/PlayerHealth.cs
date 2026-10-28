@@ -68,6 +68,7 @@ public class PlayerHealth : MonoBehaviour
         lives[currHealth].SetActive(true);
         currHealth++;
         AudioManager.Instance.PlaySFX("Hurt_Player");
+
         if (currHealth >= maxHealth)
         {
             currHealth = maxHealth;

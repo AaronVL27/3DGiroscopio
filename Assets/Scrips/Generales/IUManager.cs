@@ -7,6 +7,7 @@ public class IUManager : MonoBehaviour
     public static IUManager Instance;
 
     [SerializeField] private TextMeshProUGUI scoreCar;
+    [SerializeField] private TextMeshProUGUI scoreEnemy;
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private GameObject hudPanel;
     [SerializeField] private GameObject pausePanel;
@@ -65,6 +66,8 @@ public class IUManager : MonoBehaviour
         SettingsManager.CambiarModo(modoInicial); // avisa a quien esté escuchando (Player, joysticks UI)
 
         scoreCar.text = "Puntaje: " + GameManager.Instance.ChageGameShotObjetive + "/" + GameManager.Instance.ChageGameShot.ToString();
+        Score();
+
     }
     public void OnToggleDosJoysticks(bool activado)
     {
@@ -87,10 +90,19 @@ public class IUManager : MonoBehaviour
         hudTwoJoistick.SetActive(modo == ModoControl.DosJoysticks);
         hudOneJoistick.SetActive(modo == ModoControl.UnJoystick);
     }
-    public void AddScore()
+    public void AddScoreCar()
     {
         score++;
         scoreCar.text = "Puntaje: " + GameManager.Instance.ChageGameShotObjetive + "/" + GameManager.Instance.ChageGameShot.ToString();
+    }
+
+    public void Score()
+    {
+        scoreEnemy.text = GameManager.Instance.Score.ToString();
+    }
+    public void ScoreReset()
+    {
+        scoreEnemy.text = 0.ToString();
     }
 
     public void OnPlayButton()

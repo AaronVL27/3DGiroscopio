@@ -99,5 +99,6 @@ public class EnemyController : MonoBehaviour
         AudioManager.Instance.PlaySFX("Hurt_EnemyP");
         currHealth = MaxHealth;
         objectPool.ReturnToPool(gameObject);
+        GameManager.Instance.AddScore();
     }
 }
